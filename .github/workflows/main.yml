@@ -1,0 +1,33 @@
+name: CI CD with Expo
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: setup jdk1.8
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - uses: expo/expo-github-action@v5
+        with:
+          expo-version: 3.x
+          expo-username: ${{ secrets.EXPO_CLI_USERNAME }}
+          expo-password: ${{ secrets.EXPO_CLI_PASSWORD }}
+
+      - name: Install deps
+        run: yarn install
+
+      - name: Build Android APK Bundle
+        run: expo build:android
